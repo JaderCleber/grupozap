@@ -13,6 +13,7 @@ import Menu from '@material-ui/core/Menu';
 const styles = {
   root: {
     flexGrow: 1,
+    overflow: 'hidden'
   },
   grow: {
     flexGrow: 1,
