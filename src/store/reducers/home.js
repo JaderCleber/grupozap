@@ -1,15 +1,13 @@
 import { types } from '../actions/home';
-const initial = {
-  values: []
-};
+const initial = {};
 
 export default (state = initial, action) => {
   const { type, payload } = action;
   switch (type) {
-    case types.GET_HOME:
+    case `${types.GET_HOME}_FULFILLED`:
       return {
         ...state,
-        values: payload
+        data: payload
       };
     default:
       return state;
