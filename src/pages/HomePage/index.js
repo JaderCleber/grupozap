@@ -4,11 +4,10 @@ import { bindActionCreators } from 'redux';
 import actionsHome from '../../store/actions/home'
 import TemplateAppBar from '../../templates/TemplateAppBar'
 import { Label } from '../../components'
-import { Grid, Paper, FormControlLabel, InputLabel, FormControl, Input, InputAdornment, TextField, MenuItem, Typography, TablePagination } from '@material-ui/core';
+import { Grid, Paper, FormControlLabel, InputLabel, FormControl, Input, InputAdornment, TextField, MenuItem, Typography, ButtonBase, TablePagination } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import Pagination from '../../components/Pagination';
-import Slide from '../../components/Slide';
 
 const styles = theme => ({
   root: {
@@ -25,6 +24,12 @@ const styles = theme => ({
   image: {
     width: 128,
     height: 128,
+  },
+  img: {
+    margin: 'auto',
+    display: 'block',
+    maxWidth: '100%',
+    maxHeight: '100%',
   },
   textField: {
     width: '100%',
@@ -257,7 +262,9 @@ class HomePage extends React.Component {
                 <Paper className={classes.paper} key={id}>
                   <Grid container spacing={16}>
                     <Grid item>
-                      <Slide imgs={images} />
+                      <ButtonBase className={classes.image}>
+                        <img className={classes.img} alt="complex" src={images[0]} />
+                      </ButtonBase>
                     </Grid>
                     <Grid item xs={12} sm container className={classes.pointer} onClick={this.getDetails(item)}>
                       <Grid item xs container direction="column" spacing={16}>
