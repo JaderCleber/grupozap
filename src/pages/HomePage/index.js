@@ -3,10 +3,11 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux';
 import actionsHome from '../../store/actions/home'
 import TemplateAppBar from '../../templates/TemplateAppBar'
-import { Label } from '../../atoms'
-import { Grid, Paper, FormControlLabel, InputLabel, FormControl, Input, InputAdornment, TextField, MenuItem, Card, CardContent, CardActionArea, CardMedia, Typography, Button, CardActions, ButtonBase } from '@material-ui/core';
+import { Label } from '../../components'
+import { Grid, Paper, FormControlLabel, InputLabel, FormControl, Input, InputAdornment, TextField, MenuItem, Typography, ButtonBase, TablePagination } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
+import Pagination from '../../components/Pagination';
 
 const styles = theme => ({
   root: {
@@ -38,147 +39,6 @@ const styles = theme => ({
   }
 });
 
-const values = [
-  {
-    "usableAreas": 70,
-    "listingType": "USED",
-    "createdAt": "2017-04-22T18:39:31.138Z",
-    "listingStatus": "ACTIVE",
-    "id": "7baf2775d4a2",
-    "parkingSpaces": 1,
-    "updatedAt": "2017-04-22T18:39:31.138Z",
-    "owner": false,
-    "images": [
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/f908948bf1d9e53d36c4734d296feb99.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/bd37e4c09ddd370529489fbbc461dbec.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/7b86204f34b751c432c878d607c9d618.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/3b1142cffc13c49a1e7ea766c20a1d52.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/f519a27d56696febfb77f6398f4484d8.jpg"],
-    "address": {
-      "city": "São Paulo",
-      "neighborhood": "República",
-      "geoLocation": {
-        "precision": "NO_GEOCODE",
-        "location": {
-          "lon": 0,
-          "lat": 0
-        }
-      }
-    },
-    "bathrooms": 2,
-    "bedrooms": 3,
-    "pricingInfos": {
-      "yearlyIptu": "60",
-      "price": "276000",
-      "businessType": "RENT",
-      "monthlyCondoFee": "0"
-    }
-  },
-  {
-    "usableAreas": 70,
-    "listingType": "USED",
-    "createdAt": "2017-04-22T18:39:31.138Z",
-    "listingStatus": "ACTIVE",
-    "id": "7baf2775d4a2",
-    "parkingSpaces": 1,
-    "updatedAt": "2017-04-22T18:39:31.138Z",
-    "owner": false,
-    "images": ["https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/f908948bf1d9e53d36c4734d296feb99.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/bd37e4c09ddd370529489fbbc461dbec.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/7b86204f34b751c432c878d607c9d618.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/3b1142cffc13c49a1e7ea766c20a1d52.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/f519a27d56696febfb77f6398f4484d8.jpg"],
-    "address": {
-      "city": "",
-      "neighborhood": "",
-      "geoLocation": {
-        "precision": "NO_GEOCODE",
-        "location": {
-          "lon": 0,
-          "lat": 0
-        }
-      }
-    },
-    "bathrooms": 1,
-    "bedrooms": 2,
-    "pricingInfos": {
-      "yearlyIptu": "60",
-      "price": "276000",
-      "businessType": "SALE",
-      "monthlyCondoFee": "0"
-    }
-  },
-  {
-    "usableAreas": 70,
-    "listingType": "USED",
-    "createdAt": "2017-04-22T18:39:31.138Z",
-    "listingStatus": "ACTIVE",
-    "id": "7baf2775d4a2",
-    "parkingSpaces": 1,
-    "updatedAt": "2017-04-22T18:39:31.138Z",
-    "owner": false,
-    "images": [
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/f908948bf1d9e53d36c4734d296feb99.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/bd37e4c09ddd370529489fbbc461dbec.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/7b86204f34b751c432c878d607c9d618.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/3b1142cffc13c49a1e7ea766c20a1d52.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/f519a27d56696febfb77f6398f4484d8.jpg"],
-    "address": {
-      "city": "São Paulo",
-      "neighborhood": "República",
-      "geoLocation": {
-        "precision": "NO_GEOCODE",
-        "location": {
-          "lon": 0,
-          "lat": 0
-        }
-      }
-    },
-    "bathrooms": 2,
-    "bedrooms": 3,
-    "pricingInfos": {
-      "yearlyIptu": "60",
-      "price": "276000",
-      "businessType": "RENT",
-      "monthlyCondoFee": "0"
-    }
-  },
-  {
-    "usableAreas": 70,
-    "listingType": "USED",
-    "createdAt": "2017-04-22T18:39:31.138Z",
-    "listingStatus": "ACTIVE",
-    "id": "7baf2775d4a2",
-    "parkingSpaces": 1,
-    "updatedAt": "2017-04-22T18:39:31.138Z",
-    "owner": false,
-    "images": ["https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/f908948bf1d9e53d36c4734d296feb99.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/bd37e4c09ddd370529489fbbc461dbec.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/7b86204f34b751c432c878d607c9d618.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/3b1142cffc13c49a1e7ea766c20a1d52.jpg",
-      "https://resizedimgs.vivareal.com/crop/400x300/vr.images.sp/f519a27d56696febfb77f6398f4484d8.jpg"],
-    "address": {
-      "city": "",
-      "neighborhood": "",
-      "geoLocation": {
-        "precision": "NO_GEOCODE",
-        "location": {
-          "lon": 0,
-          "lat": 0
-        }
-      }
-    },
-    "bathrooms": 1,
-    "bedrooms": 2,
-    "pricingInfos": {
-      "yearlyIptu": "60",
-      "price": "276000",
-      "businessType": "SALE",
-      "monthlyCondoFee": "0"
-    }
-  }
-];
-
 class HomePage extends React.Component {
 
   state = {
@@ -195,33 +55,88 @@ class HomePage extends React.Component {
         min: null,
         max: null
       },
-      bedrooms: ''
+      bedrooms: '',
+      page: 0,
+      order: 'date'
     },
   };
+
+  componentDidMount() {
+    const { values, getHome } = this.props;
+    if (!values.length) {
+      getHome();
+    }
+  }
 
   handleCheck = filter => (e) => {
     const { name, checked } = e.target;
     const value = Object.assign({}, this.state.filter[filter], { [name]: checked });
-    this.setState({ filter: Object.assign({}, this.state.filter, { [filter]: value }) }, () => {
-      // TODO get values
-    })
+    this.setState({ filter: Object.assign({}, this.state.filter, { [filter]: value }) })
   }
 
   handlePrice = (e) => {
     const { name, value } = e.target;
     const price = Object.assign({}, this.state.filter.price, { [name]: value });
-    this.setState({ filter: Object.assign({}, this.state.filter, { price }) }, () => {
-      // TODO get values
-    })
+    this.setState({ filter: Object.assign({}, this.state.filter, { price }) })
   }
 
-  getDetails = item => () => {
+  handlePage = (e, page) => {
+    this.setState({ filter: Object.assign({}, this.state.filter, { page }) })
+    window.scrollTo(0, 0);
+  }
+
+  handleOrder = (e) => {
+    this.setState({ filter: Object.assign({}, this.state.filter, { order: e.target.value }) })
+  }
+
+  getDetails = () => () => {
     this.props.history.push({ pathname: `/details` })
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, values } = this.props;
     const { filter } = this.state;
+
+    const { page, price, businessType, order } = filter;
+
+    const { min, max } = price;
+    const { sale, rent } = businessType;
+
+    const valuesFiltered = values.filter(item => {
+      const { businessType, price } = item.pricingInfos;
+      if (!sale && businessType === 'SALE') {
+        return false;
+      }
+      if (!rent && businessType === 'RENTAL') {
+        return false;
+      }
+
+      if (min) {
+        if (Number(price) < Number(min)) {
+          return false;
+        }
+      }
+
+      if (max) {
+        if (Number(price) > Number(max)) {
+          return false;
+        }
+      }
+      return true;
+    }).sort((prev, next) => {
+      if (order === 'price') {
+        const pricePrev = Number(prev.pricingInfos.price);
+        const priceNext = Number(next.pricingInfos.price);
+        return pricePrev > priceNext ? 1 : -1;
+      } else {
+        const datePrev = new Date(prev.updatedAt);
+        const dateNext = new Date(next.updatedAt);
+        return datePrev < dateNext ? 1 : -1;
+      }
+    })
+
+    const offSet = 20 * page;
+    const valuesPage = valuesFiltered.slice(offSet, offSet + 20);
     return (
       <TemplateAppBar>
         <Grid container className={classes.root} spacing={16}>
@@ -257,7 +172,7 @@ class HomePage extends React.Component {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={filter.businessType.sale}
+                      checked={sale}
                       onChange={this.handleCheck('businessType')}
                       name="sale"
                     />
@@ -268,7 +183,7 @@ class HomePage extends React.Component {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      checked={filter.businessType.rent}
+                      checked={rent}
                       onChange={this.handleCheck('businessType')}
                       name="rent"
                     />
@@ -284,7 +199,7 @@ class HomePage extends React.Component {
                     <InputLabel htmlFor="price-min">Mínimo</InputLabel>
                     <Input
                       id="price-min"
-                      value={filter.price.min}
+                      value={min}
                       onChange={this.handlePrice}
                       name='min'
                       startAdornment={<InputAdornment position="start">R$</InputAdornment>}
@@ -297,7 +212,7 @@ class HomePage extends React.Component {
                     <InputLabel htmlFor="price-max">Máximo</InputLabel>
                     <Input
                       id="price-max"
-                      value={filter.price.max}
+                      value={max}
                       onChange={this.handlePrice}
                       name='max'
                       startAdornment={<InputAdornment position="start">R$</InputAdornment>}
@@ -308,16 +223,16 @@ class HomePage extends React.Component {
             </Paper>
           </Grid>
           <Grid item xs={8}>
-            <Grid container justify='space-between'>
+            <Grid container justify='space-between' className={classes.control}>
               <Grid item xs={3}>
-                <Label><strong>{values.length}</strong> Encontrados</Label>
+                <Label><strong>{valuesFiltered.length}</strong> Encontrados</Label>
               </Grid>
               <Grid item xs={3}>
                 <TextField
                   select
-                  label="Order por"
+                  label="Ordenar por"
                   className={classes.textField}
-                  value={this.state.weightRange}
+                  value={order}
                   onChange={this.handleOrder}
                 >
                   <MenuItem value='price'>Preço</MenuItem>
@@ -325,7 +240,7 @@ class HomePage extends React.Component {
                 </TextField>
               </Grid>
             </Grid>
-            {values.map(item => {
+            {valuesPage.map(item => {
               const { id,
                 images,
                 bedrooms,
@@ -333,7 +248,8 @@ class HomePage extends React.Component {
                 address,
                 usableAreas,
                 bathrooms,
-                parkingSpaces } = item;
+                parkingSpaces,
+                updatedAt } = item;
               const price = Number(pricingInfos.price).toLocaleString('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
@@ -363,6 +279,9 @@ class HomePage extends React.Component {
                           <strong> {bathrooms}</strong> banheiros |
                           <strong> {parkingSpaces}</strong> vagas
                         </Typography>
+                          <Typography color="textSecondary">
+                            Atualizado em: <strong>{new Date(updatedAt).toLocaleString('pt-BR')}</strong>
+                          </Typography>
                         </Grid>
                       </Grid>
                       <Grid item>
@@ -374,6 +293,19 @@ class HomePage extends React.Component {
                 </Paper>
               )
             })}
+            {valuesFiltered.length > 0 && (<TablePagination
+              rowsPerPageOptions={[20]}
+              colSpan={3}
+              count={valuesFiltered.length}
+              rowsPerPage={20}
+              page={page}
+              SelectProps={{
+                native: true,
+              }}
+              onChangePage={this.handlePage}
+              // onChangeRowsPerPage={this.handleChangeRowsPerPage}
+              ActionsComponent={Pagination}
+            />)}
           </Grid>
         </Grid>
       </TemplateAppBar>)
@@ -382,7 +314,7 @@ class HomePage extends React.Component {
 
 
 const mapStateToProps = (state) => ({
-
+  ...state.home
 })
 
 
