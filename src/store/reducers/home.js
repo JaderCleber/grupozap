@@ -1,6 +1,7 @@
 import { types } from '../actions/home';
 const initial = {
-  values: []
+  values: [],
+  item: null
 };
 
 export default (state = initial, action) => {
@@ -10,6 +11,11 @@ export default (state = initial, action) => {
       return {
         ...state,
         values: payload
+      };
+    case types.GET_DETAILS:
+      return {
+        ...state,
+        item: payload
       };
     default:
       return state;
