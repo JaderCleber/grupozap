@@ -7,7 +7,8 @@ class HomeApi {
       return response.data;
     } catch (error) {
       console.error(error);
-      return 
+      const response = await axios.get('source-1.json');
+      return response.data;
     }
   }
 }

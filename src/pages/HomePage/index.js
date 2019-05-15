@@ -84,8 +84,10 @@ class HomePage extends React.Component {
     this.setState({ filter: Object.assign({}, this.state.filter, { order: e.target.value }) })
   }
 
-  getDetails = () => () => {
-    this.props.history.push({ pathname: `/details` })
+  getDetails = (item) => () => {
+    const { history, getDetails } = this.props;
+    getDetails(item);
+    history.push({ pathname: `/details` })
   }
 
   render() {
@@ -223,7 +225,7 @@ class HomePage extends React.Component {
                 <Label><strong>{valuesFiltered.length}</strong> Encontrados</Label>
               </Grid>
               <Grid item xs={3}>
-                <TextField
+                {valuesFiltered.length > 0 && (<TextField
                   select
                   label="Ordenar por"
                   className={classes.textField}
@@ -232,7 +234,7 @@ class HomePage extends React.Component {
                 >
                   <MenuItem value='price'>Preço</MenuItem>
                   <MenuItem value='date'>Data</MenuItem>
-                </TextField>
+                </TextField>)}
               </Grid>
             </Grid>
             {valuesPage.map(item => {
