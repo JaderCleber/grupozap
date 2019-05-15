@@ -3,11 +3,12 @@ import axios from 'axios';
 class HomeApi {
   static async getHome() {
     try {
-      const response = await axios.get('/url/example');
-      console.log(response);
-      return response;
+      const response = await axios.get('http://grupozap-code-challenge.s3-website-us-east-1.amazonaws.com/sources/source-1.json');
+      return response.data;
     } catch (error) {
       console.error(error);
+      const response = await axios.get('source-1.json');
+      return response.data;
     }
   }
 }
