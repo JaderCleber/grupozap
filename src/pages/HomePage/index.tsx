@@ -4,12 +4,24 @@ import { bindActionCreators } from 'redux';
 import actionsHome from '../../store/actions/home'
 import TemplateAppBar from '../../templates/TemplateAppBar'
 import { Label } from '../../components'
-import { Grid, Paper, FormControlLabel, InputLabel, FormControl, Input, InputAdornment, TextField, MenuItem, Typography, TablePagination } from '@material-ui/core';
+import { Grid, Paper, FormControlLabel, InputLabel, FormControl, Input, InputAdornment, TextField, MenuItem, Typography, TablePagination, FormLabel, RadioGroup, Radio } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/styles';
 import Checkbox from '@material-ui/core/Checkbox';
 import Pagination from '../../components/Pagination';
 import Slide from '../../components/Slide';
 import IImmobile from '../../model/IImmobile';
+
+const ZAP_MIN_SALE = 600000;
+const ZAP_MIN_RENT = 3500;
+const VIVA_MAX_RENT = 4000;
+const VIVA_MAX_SALE = 700000;
+const VIVA_PERCENT_ACCEPT_RENT = 0.3;
+const VIVA_PERCENT_BOUNDING = 0.5;
+
+const MIN_LON = -46.693419;
+const MIN_LAT = -23.568704;
+const MAX_LON = -46.641146;
+const MAX_LAT = -23.546686;
 
 const styles = (theme: any) => ({
   root: {
@@ -45,10 +57,11 @@ interface PropsType {
 
 interface StateType {
   filter: {
-    portal: {
-      viva: boolean,
-      zap: boolean
-    },
+    portal: string,
+    businessType: {
+      sale: boolean,
+      rent: boolean
+    }
     price: {
       min: number | undefined,
       max: number | undefined
@@ -63,9 +76,10 @@ interface StateType {
 class HomePage extends React.Component<PropsType, StateType> {
   state = {
     filter: {
-      portal: {
-        viva: true,
-        zap: true
+      portal: 'zap',
+      businessType: {
+        sale: true,
+        rent: true
       },
       price: {
         min: undefined,
@@ -91,18 +105,27 @@ class HomePage extends React.Component<PropsType, StateType> {
     this.setState({ filter: Object.assign({}, this.state.filter, { [filter]: value }) })
   }
 
+  handleChangePortal = (e: React.ChangeEvent<any>) => {
+    const { value } = e.target;
+    // @ts-ignore: Unreachable code error
+    this.setState({ filter: Object.assign({}, this.state.filter, { portal: value }) })
+  }
+
   handlePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const price = Object.assign({}, this.state.filter.price, { [name]: value });
+    // @ts-ignore: Unreachable code error
     this.setState({ filter: Object.assign({}, this.state.filter, { price }) })
   }
 
   handlePage = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, page: number) => {
+    // @ts-ignore: Unreachable code error
     this.setState({ filter: Object.assign({}, this.state.filter, { page }) })
     window.scrollTo(0, 0);
   }
 
   handleOrder = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // @ts-ignore: Unreachable code error
     this.setState({ filter: Object.assign({}, this.state.filter, { order: e.target.value }) })
   }
 
@@ -112,26 +135,37 @@ class HomePage extends React.Component<PropsType, StateType> {
     history.push({ pathname: `/details` })
   }
 
+  inBounding({ lon, lat }: { lon: number, lat: number }): boolean {
+    const boundingLon = lon > MIN_LON && lon < MAX_LON;
+    const boundingLat = lat > MIN_LAT && lat < MAX_LAT;
+    return boundingLon && boundingLat;
+  }
+
   render() {
     const { classes, values } = this.props;
     const { filter } = this.state;
 
-    const { page, price, portal, order } = filter;
+    const { page, price, portal, order, businessType } = filter;
 
     const { min, max } = price;
-    const { zap, viva } = portal;
+    const { sale, rent } = businessType;
 
     const valuesFiltered = values.filter(item => {
       const { businessType, price } = item.pricingInfos;
-      if (!zap && businessType === 'SALE') {
+      const priceValue = Number(price);
+      const condo = Number(item.pricingInfos.monthlyCondoFee);
+      const { lon, lat } = item.address.geoLocation.location;
+
+      // FILTER BY TYPE
+      if (!sale && businessType === 'SALE') {
         return false;
       }
-      if (!viva && businessType === 'RENTAL') {
+      if (!rent && businessType === 'RENTAL') {
         return false;
       }
 
       if (min) {
-        if (Number(price) < Number(min)) {
+        if (priceValue < Number(min)) {
           return false;
         }
       }
@@ -139,6 +173,32 @@ class HomePage extends React.Component<PropsType, StateType> {
       if (max) {
         if (Number(price) > Number(max)) {
           return false;
+        }
+      }
+
+      // FILTER BY PORTAL
+      if (portal === 'zap') {
+        if (businessType === 'SALE') {
+          if (priceValue < ZAP_MIN_SALE) {
+            return false;
+          } else if (item.usableAreas && (priceValue / item.usableAreas <= VIVA_MAX_SALE)) {
+            return false;
+          }
+        } else if (priceValue < ZAP_MIN_RENT) {
+          return false;
+        }
+      } else if (portal === 'viva') {
+        if (businessType === 'SALE') {
+          if (priceValue > VIVA_MAX_SALE) {
+            return false;
+          }
+        } else {
+          if (priceValue > VIVA_MAX_RENT) {
+            return false;
+          } else if (condo) {
+            const percent = this.inBounding({ lon, lat }) ? VIVA_PERCENT_BOUNDING : VIVA_PERCENT_ACCEPT_RENT
+            return condo >= priceValue * percent;
+          }
         }
       }
       return true;
@@ -161,7 +221,21 @@ class HomePage extends React.Component<PropsType, StateType> {
         <Grid container className={classes.root} spacing={16}>
           <Grid item xs={4}>
             <Paper className={classes.paper}>
-              <Label>Portal</Label>
+              <FormControl className={classes.formControl}>
+                <FormLabel >Portal</FormLabel>
+                <RadioGroup
+                  aria-label='Gender'
+                  name='portal'
+                  className={classes.group}
+                  value={portal}
+                  onChange={this.handleChangePortal}
+                >
+                  <FormControlLabel value='zap' control={<Radio />} label='ZAP' />
+                  <FormControlLabel value='viva' control={<Radio />} label='VIVA' />
+                </RadioGroup>
+              </FormControl>
+
+              {/* <Label>Portal</Label>
               <div>
                 <FormControlLabel
                   control={
@@ -183,6 +257,31 @@ class HomePage extends React.Component<PropsType, StateType> {
                     />
                   }
                   label="Zap"
+                />
+              </div> */}
+
+              <Label>Tipo de Anúncio</Label>
+              <div>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={sale}
+                      onChange={this.handleCheck('businessType')}
+                      name="sale"
+                    />
+                  }
+                  label="Venda"
+                />
+
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={rent}
+                      onChange={this.handleCheck('businessType')}
+                      name="rent"
+                    />
+                  }
+                  label="Aluguel"
                 />
               </div>
 
